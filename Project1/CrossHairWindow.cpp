@@ -38,11 +38,6 @@ void CrossHairWindow::OnPaint(HDC& hdc) {
 		 pCh->GetColor(Key::DotColor)[2]));
 
 	 
-	static Gdiplus::SolidBrush	ch_transprect_brush(Gdiplus::Color( // used to create a transparent rectangle in the middle of our cross, to create seperation between the lines or other effects
-		 transpcolor[0],
-		 transpcolor[1],
-		 transpcolor[2]));
-
 	Gdiplus::Graphics graphics(hdc);
 
 	graphics.Clear({transpcolor[0],
@@ -52,7 +47,6 @@ void CrossHairWindow::OnPaint(HDC& hdc) {
 
 	//form a cross
 	//topleftx, toplefty, width, height
-
 	graphics.FillRectangle(&ch_cross_brush,  (width / 2) - pCh->Get(Key::CrossLength) - pCh->Get(Key::CenterGap), (height / 2) - pCh->Get(Key::Thickness), pCh->Get(Key::CrossLength), pCh->Get(Key::Thickness) * 2); //horiz left
 	graphics.FillRectangle(&ch_cross_brush, (width / 2) + pCh->Get(Key::CenterGap), (height / 2) - pCh->Get(Key::Thickness), pCh->Get(Key::CrossLength), pCh->Get(Key::Thickness) * 2); //horiz right
 	graphics.FillRectangle(&ch_cross_brush,  (width / 2) - pCh->Get(Key::Thickness), ((height / 2) - pCh->Get(Key::CrossLength)) - pCh->Get(Key::CenterGap), pCh->Get(Key::Thickness) * 2, pCh->Get(Key::CrossLength) ); //vert top
@@ -109,7 +103,7 @@ LRESULT CALLBACK CrossHairWindow::WndProc(HWND hWnd, UINT msg, WPARAM wParam, LP
 		//when dragging is enabled, do this so we can move the crosshair window
 		if (hWnd == pch_window->hWnd) {
 
-			POINT mousecoordinates{ LOWORD(lParam), HIWORD(lParam) }; //get the current mouse coordinates in client space, then convert to screen space
+			POINT mousecoordinates{ LOWORD(lParam), HIWORD(lParam) }; //get the current mouse coordinates in client space
 
 
 			static POINT prev_coordinates{ };
@@ -129,7 +123,7 @@ LRESULT CALLBACK CrossHairWindow::WndProc(HWND hWnd, UINT msg, WPARAM wParam, LP
 	}
 	case WM_PAINT: {
 
-		//reset the transparency level	
+		//reset the transparency level in the case the user changed it	
 		pch_window->MakeTransparent(hWnd, LWA_COLORKEY | LWA_ALPHA, RGB(pch_window->transpcolor[0], pch_window->transpcolor[1], pch_window->transpcolor[2]), pch_window->pCh->Get(Key::Transparency));
 
 		PAINTSTRUCT ps;
