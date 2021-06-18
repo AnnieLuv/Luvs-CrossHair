@@ -72,9 +72,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevinstance, PSTR szCmdLine,
     std::thread worker1(CrossHairDragEnabler, menu_window);
 
      MSG msg;
-     //If no messages are available, the return value is zero.
      while (GetMessage(&msg, nullptr, 0, 0)){
-
 
          TranslateMessage(&msg);
          DispatchMessage(&msg);
