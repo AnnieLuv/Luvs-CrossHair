@@ -11,5 +11,7 @@ namespace WindowsFuncs {
 	std::string getGdiplusStatusMessage(Gdiplus::Status status);
 	void OutPut(const std::string& err);
 	bool OutPutYesNo(const std::string& err);
+	void GdiToHighQuality(Gdiplus::Graphics * graphics);
+	void GdiToLowQuality(Gdiplus::Graphics * graphics);
 	
 }

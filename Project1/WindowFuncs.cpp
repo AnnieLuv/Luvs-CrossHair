@@ -135,3 +135,22 @@ bool WindowsFuncs::OutPutYesNo(const std::string& err)
 		return false;
 
 }
+
+void WindowsFuncs::GdiToHighQuality(Gdiplus::Graphics* graphics)
+{
+	graphics->SetCompositingMode(Gdiplus::CompositingModeSourceOver);
+	graphics->SetCompositingQuality(Gdiplus::CompositingQualityHighQuality);
+	graphics->SetPixelOffsetMode(Gdiplus::PixelOffsetModeHighQuality);
+	graphics->SetSmoothingMode(Gdiplus::SmoothingModeHighQuality);
+	graphics->SetInterpolationMode(Gdiplus::InterpolationModeHighQuality);
+}
+
+void WindowsFuncs::GdiToLowQuality(Gdiplus::Graphics* graphics)
+{
+	graphics->SetCompositingMode(Gdiplus::CompositingModeSourceOver);
+	graphics->SetCompositingQuality(Gdiplus::CompositingQualityHighSpeed);
+	graphics->SetPixelOffsetMode(Gdiplus::PixelOffsetModeNone);
+	graphics->SetSmoothingMode(Gdiplus::SmoothingModeNone);
+	graphics->SetInterpolationMode(Gdiplus::InterpolationModeLowQuality);
+
+}

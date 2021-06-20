@@ -71,6 +71,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevinstance, PSTR szCmdLine,
     std::thread worker(RedrawCrossHairWindow, ch_window, menu_window);
     std::thread worker1(CrossHairDragEnabler, menu_window);
 
+
+    //set a timer for when to post our WM_TIMER messages to our message queue associated with the menu_window.
+    //we will use this to redraw our window every x milliseconds
+    SetTimer(menu_window->GetHandle(), 9999,100, nullptr);
      MSG msg;
      //If no messages are available, the return value is zero.
      while (GetMessage(&msg, nullptr, 0, 0)){

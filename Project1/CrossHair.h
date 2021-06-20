@@ -7,7 +7,8 @@
 #include <exception>
 
 enum class Key {
-	CircleColor = 1,
+	Begin = 0,
+	CircleColor,
 	CrossColor,
 	DotColor,
 	Thickness,
@@ -15,7 +16,8 @@ enum class Key {
 	CircleSize,
 	CrossLength,
 	Transparency,
-	CenterGap
+	CenterGap,
+	End
 };
 class CrossHair {
   

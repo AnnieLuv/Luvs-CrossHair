@@ -99,11 +99,15 @@ bool CrossHair::ReplaceEntry(Key key, int32_t valuetowrite, const std::array<uin
 
 	std::string line{};
 	std::stringstream buffer{};
-	size_t curr_pos{ static_cast<size_t>(Key::CircleColor) };
+	size_t curr_pos{ static_cast<size_t>(Key::Begin) + 1 };
 
 
 	while (std::getline(in, line)) {
 
+		if (key >= Key::End || key <= Key::Begin) {
+			WindowsFuncs::OutPut("Error in CrossHair.cpp::ReplaceEntry: Key is invalid");
+			break;
+		}
 		//ignore comments
 		if (line.find("//") != std::string::npos) {
 			buffer << line << "\n";
@@ -113,7 +117,7 @@ bool CrossHair::ReplaceEntry(Key key, int32_t valuetowrite, const std::array<uin
 			if (iscolor)
 				buffer << static_cast<int32_t>(color[0]) << " " << static_cast<int32_t>(color[1]) << " " << static_cast<int32_t>(color[2]) << "\n";
 			else
-				buffer << valuetowrite << "\n";
+				 buffer << valuetowrite << "\n";
 		}
 		else
 			buffer << line << "\n";

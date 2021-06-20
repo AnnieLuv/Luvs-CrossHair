@@ -8,68 +8,54 @@ CrossHairWindow* pch_window{ nullptr };
 
 void CrossHairWindow::OnPaint(HDC& hdc) {
 
-	//init all our pens and brushes
-	//dont want to make them static because the colors will change on user input
-	 Gdiplus::Pen ch_cross_pen(Gdiplus::Color(
-		1,  //r
-		1,  //g
-		1),
-		0.5f);//b
-
-	 Gdiplus::SolidBrush ch_cross_brush(Gdiplus::Color(
+	 ch_cross_brush.SetColor(Gdiplus::Color(	
 		pCh->GetColor(Key::CrossColor)[0],
 		pCh->GetColor(Key::CrossColor)[1],
 		pCh->GetColor(Key::CrossColor)[2]));
 
-	 Gdiplus::Pen	ch_circle_pen(Gdiplus::Color(
-		pCh->GetColor(Key::CircleColor)[0],
-		pCh->GetColor(Key::CircleColor)[1],
-		pCh->GetColor(Key::CircleColor)[2]),
-		 pCh->Get(Key::Thickness) / 2);
-
-	 Gdiplus::SolidBrush	ch_circle_brush(Gdiplus::Color(
+	 ch_circle_pen.SetColor(Gdiplus::Color(	
 		pCh->GetColor(Key::CircleColor)[0],
 		pCh->GetColor(Key::CircleColor)[1],
 		pCh->GetColor(Key::CircleColor)[2]));
 
-	 Gdiplus::SolidBrush	ch_dot_brush(Gdiplus::Color(
+	ch_circle_brush.SetColor(Gdiplus::Color(		
+		pCh->GetColor(Key::CircleColor)[0],
+		pCh->GetColor(Key::CircleColor)[1],
+		pCh->GetColor(Key::CircleColor)[2]));
+
+	ch_dot_brush.SetColor(Gdiplus::Color(	
 		 pCh->GetColor(Key::DotColor)[0],
 		 pCh->GetColor(Key::DotColor)[1],
 		 pCh->GetColor(Key::DotColor)[2]));
 
-	 
-	static Gdiplus::SolidBrush	ch_transprect_brush(Gdiplus::Color( // used to create a transparent rectangle in the middle of our cross, to create seperation between the lines or other effects
-		 transpcolor[0],
-		 transpcolor[1],
-		 transpcolor[2]));
-
-	Gdiplus::Graphics graphics(hdc);
-
-	graphics.Clear({transpcolor[0],
-		transpcolor[1],
-		transpcolor[2] });
+	//do all the drawing to our back buffer
+	//since we're clearing the backbuffer before drawing onto it, we only present the final image to the window 
+	//since we are not clearing the window itself, which causes flickering
+	offscreengraphics->Clear(Gdiplus::Color(transpcolor[0], transpcolor[1], transpcolor[2]));
 
 
 	//form a cross
 	//topleftx, toplefty, width, height
 
-	graphics.FillRectangle(&ch_cross_brush,  (width / 2) - pCh->Get(Key::CrossLength) - pCh->Get(Key::CenterGap), (height / 2) - pCh->Get(Key::Thickness), pCh->Get(Key::CrossLength), pCh->Get(Key::Thickness) * 2); //horiz left
-	graphics.FillRectangle(&ch_cross_brush, (width / 2) + pCh->Get(Key::CenterGap), (height / 2) - pCh->Get(Key::Thickness), pCh->Get(Key::CrossLength), pCh->Get(Key::Thickness) * 2); //horiz right
-	graphics.FillRectangle(&ch_cross_brush,  (width / 2) - pCh->Get(Key::Thickness), ((height / 2) - pCh->Get(Key::CrossLength)) - pCh->Get(Key::CenterGap), pCh->Get(Key::Thickness) * 2, pCh->Get(Key::CrossLength) ); //vert top
-	graphics.FillRectangle(&ch_cross_brush, (width / 2) - pCh->Get(Key::Thickness), (height / 2) + pCh->Get(Key::CenterGap), pCh->Get(Key::Thickness) * 2, pCh->Get(Key::CrossLength)); //ver bottom
+	offscreengraphics->FillRectangle(&ch_cross_brush,  (width / 2) - pCh->Get(Key::CrossLength) - pCh->Get(Key::CenterGap), (height / 2) - pCh->Get(Key::Thickness), pCh->Get(Key::CrossLength), pCh->Get(Key::Thickness) * 2); //horiz left
+	offscreengraphics->FillRectangle(&ch_cross_brush, (width / 2) + pCh->Get(Key::CenterGap), (height / 2) - pCh->Get(Key::Thickness), pCh->Get(Key::CrossLength), pCh->Get(Key::Thickness) * 2); //horiz right
+	offscreengraphics->FillRectangle(&ch_cross_brush,  (width / 2) - pCh->Get(Key::Thickness), ((height / 2) - pCh->Get(Key::CrossLength)) - pCh->Get(Key::CenterGap), pCh->Get(Key::Thickness) * 2, pCh->Get(Key::CrossLength) ); //vert top
+	offscreengraphics->FillRectangle(&ch_cross_brush, (width / 2) - pCh->Get(Key::Thickness), (height / 2) + pCh->Get(Key::CenterGap), pCh->Get(Key::Thickness) * 2, pCh->Get(Key::CrossLength)); //ver bottom
 
 	//draw the outline of the cross on top of the filled rectangles (so the filled rects wouldn't overdraw the outline)
-	graphics.DrawRectangle(&ch_cross_pen, (width / 2) - pCh->Get(Key::CrossLength) - pCh->Get(Key::CenterGap), (height / 2) - pCh->Get(Key::Thickness), pCh->Get(Key::CrossLength), pCh->Get(Key::Thickness) * 2); //horiz left
-	graphics.DrawRectangle(&ch_cross_pen, (width / 2) + pCh->Get(Key::CenterGap), (height / 2) - pCh->Get(Key::Thickness), pCh->Get(Key::CrossLength), pCh->Get(Key::Thickness) * 2); //horiz right
-	graphics.DrawRectangle(&ch_cross_pen, (width / 2) - pCh->Get(Key::Thickness), ((height / 2) - pCh->Get(Key::CrossLength)) - pCh->Get(Key::CenterGap), pCh->Get(Key::Thickness) * 2, pCh->Get(Key::CrossLength)); //vert top
-	graphics.DrawRectangle(&ch_cross_pen, (width / 2) - pCh->Get(Key::Thickness), (height / 2) + pCh->Get(Key::CenterGap), pCh->Get(Key::Thickness) * 2, pCh->Get(Key::CrossLength)); //ver bottom
+	offscreengraphics->DrawRectangle(&ch_cross_pen, (width / 2) - pCh->Get(Key::CrossLength) - pCh->Get(Key::CenterGap), (height / 2) - pCh->Get(Key::Thickness), pCh->Get(Key::CrossLength), pCh->Get(Key::Thickness) * 2); //horiz left
+	offscreengraphics->DrawRectangle(&ch_cross_pen, (width / 2) + pCh->Get(Key::CenterGap), (height / 2) - pCh->Get(Key::Thickness), pCh->Get(Key::CrossLength), pCh->Get(Key::Thickness) * 2); //horiz right
+	offscreengraphics->DrawRectangle(&ch_cross_pen, (width / 2) - pCh->Get(Key::Thickness), ((height / 2) - pCh->Get(Key::CrossLength)) - pCh->Get(Key::CenterGap), pCh->Get(Key::Thickness) * 2, pCh->Get(Key::CrossLength)); //vert top
+	offscreengraphics->DrawRectangle(&ch_cross_pen, (width / 2) - pCh->Get(Key::Thickness), (height / 2) + pCh->Get(Key::CenterGap), pCh->Get(Key::Thickness) * 2, pCh->Get(Key::CrossLength)); //ver bottom
 
 	
 	//draw the dot			
-	graphics.FillEllipse(&ch_dot_brush, (width / 2) - pCh->Get(Key::DotSize), (height / 2) - pCh->Get(Key::DotSize), pCh->Get(Key::DotSize) * 2, pCh->Get(Key::DotSize) * 2);
+	offscreengraphics->FillEllipse(&ch_dot_brush, (width / 2) - pCh->Get(Key::DotSize), (height / 2) - pCh->Get(Key::DotSize), pCh->Get(Key::DotSize) * 2, pCh->Get(Key::DotSize) * 2);
 	//draw the circle
-	graphics.DrawEllipse(&ch_circle_pen, (width / 2) - pCh->Get(Key::CircleSize), (height / 2) - pCh->Get(Key::CircleSize), pCh->Get(Key::CircleSize) * 2, pCh->Get(Key::CircleSize) * 2);
+	offscreengraphics->DrawEllipse(&ch_circle_pen, (width / 2) - pCh->Get(Key::CircleSize), (height / 2) - pCh->Get(Key::CircleSize), pCh->Get(Key::CircleSize) * 2, pCh->Get(Key::CircleSize) * 2);
 
+	//finally, present the image to the screen
+	graphics->DrawImage(backbuffer.get(), 0, 0);
 }
 LRESULT CALLBACK CrossHairWindow::WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
@@ -150,7 +136,29 @@ CrossHairWindow::CrossHairWindow(std::shared_ptr<CrossHair> pCh, int32_t width, 
 	classname(classname),
 	pCh(pCh),
 	width(width),
-	height(height)
+	height(height),
+	ch_cross_pen(Gdiplus::Color(
+		1,  //r
+		1,  //g
+		1), //b
+		0.5f),
+ch_cross_brush(Gdiplus::Color(
+	pCh->GetColor(Key::CrossColor)[0],
+	pCh->GetColor(Key::CrossColor)[1],
+	pCh->GetColor(Key::CrossColor)[2])),
+ch_circle_pen(Gdiplus::Color(
+	pCh->GetColor(Key::CircleColor)[0],
+	pCh->GetColor(Key::CircleColor)[1],
+	pCh->GetColor(Key::CircleColor)[2]),
+	pCh->Get(Key::Thickness) / 2),
+ch_circle_brush(Gdiplus::Color(
+	pCh->GetColor(Key::CircleColor)[0],
+	pCh->GetColor(Key::CircleColor)[1],
+	pCh->GetColor(Key::CircleColor)[2])),
+ch_dot_brush(Gdiplus::Color(
+	pCh->GetColor(Key::DotColor)[0],
+	pCh->GetColor(Key::DotColor)[1],
+	pCh->GetColor(Key::DotColor)[2]))
 
 {
 	
@@ -196,6 +204,10 @@ CrossHairWindow::CrossHairWindow(std::shared_ptr<CrossHair> pCh, int32_t width, 
 		NULL);
 
 	ShowWindow(hWnd, SW_SHOW);
+
+	graphics = std::make_unique<Gdiplus::Graphics>(GetDC(hWnd));
+	backbuffer = std::make_unique<Gdiplus::Bitmap>(width, height);
+	offscreengraphics = std::make_unique<Gdiplus::Graphics>(backbuffer.get());
 
 	//make the background of our window transparent
 	MakeTransparent(hWnd, LWA_COLORKEY | LWA_ALPHA,RGB(transpcolor[0], transpcolor[1], transpcolor[2]) , pch_window->pCh->Get(Key::Transparency));

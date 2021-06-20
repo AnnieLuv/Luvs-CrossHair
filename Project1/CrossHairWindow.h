@@ -41,4 +41,15 @@ private:
 	std::shared_ptr<CrossHair> pCh;
 	std::array<uint8_t, 3> transpcolor{ 12,10,10 };
 
+	/*********************************************/
+	Gdiplus::Pen ch_cross_pen;
+	Gdiplus::SolidBrush ch_cross_brush;
+	Gdiplus::Pen ch_circle_pen;
+	Gdiplus::SolidBrush	ch_circle_brush;
+	Gdiplus::SolidBrush	ch_dot_brush;
+
+	std::unique_ptr<Gdiplus::Graphics> graphics;
+	std::unique_ptr<Gdiplus::Graphics> offscreengraphics;
+	std::unique_ptr<Gdiplus::Bitmap> backbuffer;
+	/***********************************************/
 };
